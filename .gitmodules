@@ -1,0 +1,3 @@
+[submodule "OfficialResources/resource-stream"]
+	path = OfficialResources/resource-stream
+	url = https://github.com/cuda-mode/resource-stream.git
