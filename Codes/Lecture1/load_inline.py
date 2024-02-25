@@ -53,6 +53,8 @@ a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], device='cuda')
 with torch.autograd.profiler.profile(use_cuda=True) as prof:
     print(square_matrix_extension.square_matrix(a))
 
+print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+
 # (cudamode) ubuntu@ip-172-31-9-217:~/cudamode/cudamodelecture1$ python load_inline.py 
 # tensor([[ 1.,  4.,  9.],
 #         [16., 25., 36.]], device='cuda:0')
