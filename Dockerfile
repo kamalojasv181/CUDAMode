@@ -21,3 +21,4 @@ RUN pip install numpy
 RUN pip install transformers
 RUN pip install triton
 RUN pip install ninja
+RUN pip install pandas
