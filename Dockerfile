@@ -1,24 +1,23 @@
 # Use nvidia/cuda:12.3.1-devel-ubuntu22.04 as the base image
 FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
 
-# Update the package lists
-RUN apt-get update
+# Update the package lists and install system dependencies in a single layer
+RUN apt-get update && \
+    apt-get install -y \
+        git \
+        python3 \
+        python3-pip \
+        && rm -rf /var/lib/apt/lists/*
 
-# Install git
-RUN apt-get install -y git
-
-# Install python3
-RUN apt-get install -y python3
-
-# Install pip
-RUN apt-get install -y python3-pip
-
-# Install python packages
-RUN pip install torch torchvision torchaudio
-RUN pip install matplotlib
-RUN pip install numba
-RUN pip install numpy
-RUN pip install transformers
-RUN pip install triton
-RUN pip install ninja
-RUN pip install pandas
+# Install python packages in a single layer to reduce image size
+RUN pip install --no-cache-dir \
+    torch \
+    torchvision \
+    torchaudio \
+    matplotlib \
+    numba \
+    numpy \
+    transformers \
+    triton \
+    ninja \
+    pandas

@@ -1,3 +1,6 @@
 Lectures/
 Codes/Lecture1/load_inline_cuda/
 Codes/Lecture2/PMPP/Chapter2/vecadd.cu
+__pycache__/
+*.pyc
+*.pyo

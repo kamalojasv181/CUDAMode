@@ -18,10 +18,9 @@ def square_kernel(output_ptr, input_ptr, input_row_stride, output_row_stride, n_
     col_offsets = tl.arange(0, BLOCK_SIZE)
     input_ptrs = row_start_ptr + col_offsets
     # Load the row into SRAM, using a mask since BLOCK_SIZE may be > than n_cols
-    row = tl.load(input_ptrs, mask=col_offsets < n_cols, other=-float('inf'))
+    row = tl.load(input_ptrs, mask=col_offsets < n_cols, other=0.0)
 
     square_output = row * row
-    
     # Write back output to DRAM
     output_row_start_ptr = output_ptr + row_idx * output_row_stride
     output_ptrs = output_row_start_ptr + col_offsets
@@ -92,7 +91,8 @@ def benchmark(M, N, provider):
         ms, min_ms, max_ms = triton.testing.do_bench(lambda: square(x), quantiles=quantiles)
     if provider == 'torch-compile':
         ms, min_ms, max_ms = triton.testing.do_bench(lambda: torch.compile(torch.square)(x), quantiles=quantiles)
-    gbps = lambda ms: 2 * x.nelement() * x.element_size() * 1e-9 / (ms * 1e-3)
+    def gbps(ms):
+        return 2 * x.nelement() * x.element_size() * 1e-9 / (ms * 1e-3)
     return gbps(ms), gbps(max_ms), gbps(min_ms)
 
 

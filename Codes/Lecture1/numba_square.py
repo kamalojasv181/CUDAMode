@@ -1,4 +1,6 @@
+import numpy as np
 from numba import cuda
+
 
 # CUDA kernel
 @cuda.jit
@@ -11,12 +13,11 @@ def square_matrix_kernel(matrix, result):
         # Perform the square operation
         result[row, col] = matrix[row, col] ** 2
 
-# Example usage
-import numpy as np
 
-# Create a sample matrix
+# Example usage
+# Create a sample matrix with consistent float32 dtype
 x = 1000
-matrix = np.random.rand(16*x, 16*x)
+matrix = np.random.rand(16*x, 16*x).astype(np.float32)
 
 # Allocate memory on the device
 d_matrix = cuda.to_device(matrix)
@@ -37,5 +38,7 @@ square_matrix_kernel[blocks_per_grid, threads_per_block](d_matrix, d_result)
 result = d_result.copy_to_host()
 
 # Result is now in 'result' array
-print(matrix)
-print(result)
+print("Original matrix shape:", matrix.shape)
+print("Result matrix shape:", result.shape)
+print("Sample values - Original:", matrix[0, :5])
+print("Sample values - Squared:", result[0, :5])
